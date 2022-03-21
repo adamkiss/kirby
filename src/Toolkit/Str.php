@@ -3,6 +3,7 @@
 namespace Kirby\Toolkit;
 
 use Exception;
+use IntlDateFormatter;
 use Kirby\Exception\InvalidArgumentException;
 
 /**
@@ -264,11 +265,11 @@ class Str
      * according to locale settings
      *
      * @param int|null $time
-     * @param string|null $format
-     * @param string $handler date or strftime
+     * @param string|array|null $format
+     * @param string $handler date, intl or strftime
      * @return string|int
      */
-    public static function date(?int $time = null, ?string $format = null, string $handler = 'date')
+    public static function date(?int $time = null, $format = null, string $handler = 'date')
     {
         if (is_null($format) === true) {
             return $time;
@@ -282,6 +283,11 @@ class Str
             date_default_timezone_get();
 
             return @strftime($format, $time);
+        }
+
+        if ($handler === 'intl') {
+            $formatter = new IntlDateFormatter(null, ...$format);
+            return $formatter->format($time);
         }
 
         return $handler($format, $time);
