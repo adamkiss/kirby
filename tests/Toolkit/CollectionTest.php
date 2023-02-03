@@ -862,6 +862,30 @@ class CollectionTest extends TestCase
 	}
 
 	/**
+	 * @covers ::tap
+	 */
+	public function testTap()
+	{
+		$collection = new Collection($this->sampleData);
+
+		$collection
+			->tap(function (Collection $collection) {
+				$this->assertInstanceOf(Collection::class, $collection);
+				return 'foo'; // should be ignored
+			})
+			->tap(function (Collection $collection) use (&$count) {
+				$count = $collection->count();
+			})
+			->tap(function (Collection $collection) {
+				$collection->set('four', 'My fourth element');
+			});
+
+		$this->assertSame(3, $count);
+		$this->assertSame('My fourth element', $collection->four);
+		$this->assertSame(4, $collection->count());
+	}
+
+	/**
 	 * @covers ::toArray
 	 */
 	public function testToArray()

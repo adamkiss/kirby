@@ -1111,6 +1111,19 @@ class Collection extends Iterator implements Countable
 	}
 
 	/**
+	 * Allows insight into the collection and modification with ensured
+	 * return of the collection itself
+	 *
+	 * @param callable $callback
+	 * @return self
+	 */
+	public function tap(callable $callback): self
+	{
+		$callback($this);
+		return $this;
+	}
+
+	/**
 	 * Converts the object into an array
 	 *
 	 * @param \Closure|null $map
